@@ -16,10 +16,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        
     }
-
-    
     
     @IBAction func loginTouch(_ sender: Any) {
         
@@ -46,49 +45,54 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction func singUpTouch(_ sender: Any) {
+    @IBAction func createTouch(_ sender: Any) {
         
-        let mailField = loginEmail.text!
-        let passwordField = loginPassword.text!
-
-        let alert = UIAlertController(title: "Register", message: "🖖", preferredStyle: .alert)
-
-        let saveAction = UIAlertAction(title: "註冊", style: .default) { _ in
-
-            let mailField = alert.textFields![0]
-            let passwordField = alert.textFields![1]
-
-            //Firebase註冊建立帳號
-            Auth.auth().createUser(withEmail: mailField.text!, password: passwordField.text!, completion: { user, error in
-
-                if error == nil {
-
-                    Auth.auth().signIn(withEmail: mailField.text!, password: passwordField.text!)
-                    print("登入成功!")
-                }
-                if error != nil {
-                    print("註冊失敗",error?.localizedDescription)
-
-                }
-
-            })
-
+        if let signUpViewController = storyboard?.instantiateViewController(withIdentifier: "SignUpViewController") {
+            self.present(signUpViewController, animated: true, completion: nil)
+            
         }
+//        if let signUpViewController = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
+//        let mailField = loginEmail.text!
+//        let passwordField = loginPassword.text!
+//
+//        let alert = UIAlertController(title: "Register", message: "🖖", preferredStyle: .alert)
+//
+//        let saveAction = UIAlertAction(title: "註冊", style: .default) { _ in
+//
+//            let mailField = alert.textFields![0]
+//            let passwordField = alert.textFields![1]
+//
+//            //Firebase註冊建立帳號
+//            Auth.auth().createUser(withEmail: mailField.text!, password: passwordField.text!, completion: { user, error in
+//
+//                if error == nil {
+//
+//                    Auth.auth().signIn(withEmail: mailField.text!, password: passwordField.text!)
+//                    print("登入成功!")
+//                }
+//                if error != nil {
+//                    print("註冊失敗",error?.localizedDescription)
+//
+//                }
+//
+//            })
+//
+//        }
 
 
-        alert.addTextField { textEmail in
-            textEmail.placeholder = "Enter your email"
-        }
+//        alert.addTextField { textEmail in
+//            textEmail.placeholder = "Enter your email"
+//        }
+//
+//        alert.addTextField { textPassword in
+//            textPassword.isSecureTextEntry = true
+//            textPassword.placeholder = "Enter your password"
+//        }
+//
+//        alert.addAction(saveAction)
+//        alert.addAction(UIAlertAction(title: "取消", style: .destructive))
 
-        alert.addTextField { textPassword in
-            textPassword.isSecureTextEntry = true
-            textPassword.placeholder = "Enter your password"
-        }
-
-        alert.addAction(saveAction)
-        alert.addAction(UIAlertAction(title: "取消", style: .destructive))
-
-        self.present(alert, animated: true, completion: nil) ;
+        //self.present(alert, animated: true, completion: nil) ;
         
     }
     
