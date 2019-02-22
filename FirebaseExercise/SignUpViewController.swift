@@ -56,11 +56,15 @@ class SignUpViewController: UIViewController {
         }
         
         //Firebase註冊建立帳號
-        Auth.auth().createUser(withEmail: mail, password: password, completion: { user, error in
+        Auth.auth().createUser(withEmail: mail, password: password, completion: { firuser, error in
             
             if error == nil {
                 Auth.auth().signIn(withEmail: mail, password: password)
                 print("登入成功!")
+                if let articles = self.storyboard?.instantiateViewController(withIdentifier: "ArticlesTableViewController") {
+                    self.present(articles, animated: true, completion: nil)
+                }
+                
             }
             if error != nil {
                 let alert = UIAlertController(title: "註冊失敗", message: error?.localizedDescription, preferredStyle: .alert)
@@ -70,6 +74,22 @@ class SignUpViewController: UIViewController {
                 print("註冊失敗",error?.localizedDescription as Any)
                 
             }
+            let newUser = User.init(uid: (firuser?.user.uid)!,email: self.emailTextField.text!, firstName: self.firstNameTextField.text!, lastName: self.lastNameTextField.text!)
+            newUser.save()
+//            let usersRef : DatabaseReference = Database.database().reference().child("User").childByAutoId()
+//            var userDataRemote: [String : AnyObject] = [String : AnyObject]()
+//            userDataRemote["userId"] as? AnyObject
+//            userDataRemote["usedEmail"] as? AnyObject
+//            userDataRemote["firstName"] as? AnyObject
+//            
+//            usersRef.setValue(userDataRemote) { (err, ref) in
+//                if err != nil {
+//                    print("err： \(err!)")
+//                    return
+//                }
+//                print("DDDDDDDD")
+//                print(ref.description())
+//            }
             
         })
         
