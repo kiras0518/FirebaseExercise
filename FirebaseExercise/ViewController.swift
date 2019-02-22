@@ -17,7 +17,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        //Observing 登入狀態
+        Auth.auth().addStateDidChangeListener { (auth, user) in
+            if user != nil {
+                if let ArticlesTableViewController = self.storyboard?.instantiateViewController(withIdentifier: "ArticlesTableViewController") {
+                    self.present(ArticlesTableViewController, animated: true, completion: nil)
+                }
+            }
+        }
     }
     
     @IBAction func loginTouch(_ sender: Any) {
@@ -25,13 +32,13 @@ class ViewController: UIViewController {
         //輸入驗證
         guard let email = loginEmail.text, let password = loginPassword.text, email.count > 0, password.count > 0 else {
             
-            let alert = UIAlertController(title: "Sign In Failed", message: "請輸入帳號密碼", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Login Failed", message: "請輸入帳號密碼", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "OK", style: .default));
             self.present(alert, animated: true, completion: nil)
             return
         }
-        
+        //執行登入
         Auth.auth().signIn(withEmail: email, password: password) { user, error in
             if let error = error, user == nil {
                 let alert = UIAlertController(title: "Sign In Failed", message: error.localizedDescription, preferredStyle: .alert)
@@ -98,15 +105,3 @@ class ViewController: UIViewController {
     
 }
 
-//extension ViewController: UITextFieldDelegate {
-//
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        if textField == loginEmail {
-//            loginPassword.becomeFirstResponder()
-//        }
-//        if textField == loginPassword {
-//            textField.resignFirstResponder()
-//        }
-//        return true
-//    }
-//}
