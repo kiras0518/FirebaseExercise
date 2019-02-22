@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import Firebase
 
 class ComposeViewController: UIViewController {
 
-    
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentTextView: UITextView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,11 +28,13 @@ class ComposeViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd"
         let today = dateFormatter.string(from: date)
+        
         let title = titleTextField.text
+        let context = contentTextView.text
         
         if title?.isEmpty == false {
             
-            let newStory = Articles(title: titleTextField.text!, context: contentTextView.text, author: "name", creatdate: today)
+            let newStory = Articles(title: title!, context: context!, author: "我是誰", creatdate: today)
             newStory.save()
             
             dismiss(animated: true, completion: nil)
