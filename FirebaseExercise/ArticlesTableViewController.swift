@@ -17,7 +17,6 @@ class ArticlesTableViewController: UITableViewController {
 //    let articlesRef = Database.database().reference().child("Articles")
     var articles: [Articles] = []
     
-    
 //    override func viewDidAppear(_ animated: Bool) {
 //        //super.viewDidAppear(animated)
 //
@@ -39,24 +38,28 @@ class ArticlesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //Get data
-        let articlesRef = Database.database().reference().child("Articles")
-        var newArticles: [Articles] = []
-        
+        let articlesRef = Database.database().reference().child("users").child("post")
+      
+        //傳回View
         articlesRef.observe(.value, with: { snapshot in
-            print(snapshot.value as Any)
+            //print(snapshot.value as Any)
+            var newArticles: [Articles] = []
             
             for child in snapshot.children {
-                
                 if let childSnapshot = child as? DataSnapshot,
-                    let articlesItem = Articles(snapshot: childSnapshot) {
-                     newArticles.append(articlesItem)
+                    let articlesItem = Articles(snapshot: childSnapshot){
+                        newArticles.append(articlesItem)
                 }
-               
             }
             self.articles = newArticles
+           
             self.tableView.reloadData()
             
         })
+        //print("====articles====", articles)
+       
+        //self.tableView.estimatedRowHeight = storyboard.
+//        self.tableView.rowHeight = UITableView.automaticDimension
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -75,16 +78,21 @@ class ArticlesTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return articles.count
     }
-
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticlesCell", for: indexPath) as! ArticlesTableViewCell
 
-        // Configure the cell...
+        let articlesItem = articles[indexPath.row]
 
+        //print("@@articlesItem@@",articlesItem)
+        cell.titleLabel.text = articlesItem.title
+        cell.contentLabel.text = articlesItem.context
+        cell.nameLable.text = articlesItem.author
+        cell.dateLable.text = articlesItem.creatdate
+        
         return cell
     }
-    */
+ 
 
     /*
     // Override to support conditional editing of the table view.
