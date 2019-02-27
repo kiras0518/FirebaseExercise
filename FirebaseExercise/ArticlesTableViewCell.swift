@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ArticlesTableViewCell: UITableViewCell {
 
@@ -14,6 +15,23 @@ class ArticlesTableViewCell: UITableViewCell {
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var nameLable: UILabel!
     @IBOutlet weak var dateLable: UILabel!
+    
+    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likeLabel: UILabel!
+    
+    
+    var like: [Articles] = []
+    
+    @IBAction func likePressed(_ sender: Any) {
+
+        let ref = Database.database().reference()
+        let keyToPost = ref.child("posts").childByAutoId().key
+        
+        
+        
+    }
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
