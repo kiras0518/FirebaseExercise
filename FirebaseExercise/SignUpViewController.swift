@@ -25,16 +25,17 @@ class SignUpViewController: UIViewController {
     
     func exitBarButton() {
         let cannel = UIButton(type: .system)
-        cannel.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        cannel.frame = CGRect(x: 0, y: 20, width: 40, height: 40)
         cannel.tintColor = .white
         cannel.setImage(UIImage(named: "icon-cross"), for: .normal)
         cannel.addTarget(self, action: #selector(SignUpViewController.onClose)
             , for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cannel)
+       // self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cannel)
+        self.view.addSubview(cannel)
     }
     
     @objc func onClose() {
-        dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func signUp(_ sender: Any) {
@@ -45,7 +46,7 @@ class SignUpViewController: UIViewController {
             let mail = emailTextField.text,
             let password = passwordTextField.text,
             firstName.count > 0, lastName.count > 0,
-            mail.count > 0, password.count > 0
+            mail.count > 0, password.count > 6
             else {
             
             let alert = UIAlertController(title: "Sign In Failed", message: "請輸入完整資訊", preferredStyle: .alert)
@@ -74,8 +75,23 @@ class SignUpViewController: UIViewController {
                 print("註冊失敗",error?.localizedDescription as Any)
                 
             }
-            let newUser = User.init(uid: (firuser?.user.uid)!,email: self.emailTextField.text!, firstName: self.firstNameTextField.text!, lastName: self.lastNameTextField.text!)
+
+            
+            let newUser = User.init(uuid: (firuser?.user.uid)!,email: self.emailTextField.text!, firstName: self.firstNameTextField.text!, lastName: self.lastNameTextField.text!)
             newUser.save()
+            
+            
+//            if let change = Auth.auth().currentUser?.createProfileChangeRequest() {
+//                change.displayName = firstName + lastName
+//                change.commitChanges(completion: { (error) in
+//                    if let error = error {
+//                        print("EROROROORR",error.localizedDescription)
+//                    }
+//                })
+//            }
+
+            
+            
 //            let usersRef : DatabaseReference = Database.database().reference().child("User").childByAutoId()
 //            var userDataRemote: [String : AnyObject] = [String : AnyObject]()
 //            userDataRemote["userId"] as? AnyObject
@@ -93,10 +109,7 @@ class SignUpViewController: UIViewController {
             
         })
         
-        
-        
-        
-        
+    
         
     }
     
