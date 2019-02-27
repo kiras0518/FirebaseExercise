@@ -9,48 +9,86 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 
-struct Post {
-    
-    var postId: String
-    var user: User
-    var author: Author
-    
-    init(postId: String, author: Author, user: User) {
-        //self.ref = nil
-        self.postId = postId
-        self.author = author
-        self.user = user
-        
-        //ref = Database.database().reference().child("post").childByAutoId()
-    }
-
-}
-
-
-
 struct User {
-    let uid: String
+    
+    let uuid: String
     let email: String
-    
-    init(authData: Firebase.User) {
-        uid = authData.uid
-        email = authData.email!
-    }
-    
-    init(uid: String, email: String) {
-        self.uid = uid
-        self.email = email
-    }
-}
-
-struct Author {
-    
     let firstName: String
     let lastName: String
+    let userRef: DatabaseReference?
     
-    init(firstName: String, lastName: String) {
+    init(uuid: String, email: String, firstName: String, lastName: String) {
+        
+        self.uuid = uuid
+        self.email = email
         self.firstName = firstName
         self.lastName = lastName
+       
+        userRef = Database.database().reference().child("users").child(uuid)
+    }
+    
+    init?(snapshot: DataSnapshot) {
+//        if let value:[String : Any] = snapshot.value as? [String : Any] {
+//            print(value)
+//        } else {
+//            print("error value")
+//        }
+//        if let value: [String : Any] = snapshot.value as? [String : Any ] {
+//            print(value)
+//            if let email = value["email"] as? String {
+//                if let firstName = value["firstName"] as? String {
+//                    if let lastName = value["lastName"] as? String {
+//                        if let uuid = value["uuid"] as? String {
+//
+//                            self.userRef = snapshot.ref
+//                            self.email = email
+//                            self.firstName = firstName
+//                            self.lastName = lastName
+//                            self.uuid = uuid
+//
+//                        } else {
+//                            print("error uuid")
+//                        }
+//                    } else {
+//                        print("error lastName")
+//                    }
+//                } else {
+//                    print("error firstName")
+//                }
+//            } else {
+//                print("error email")
+//            }
+//        } else {
+//            print("error value")
+//        }
+        
+        guard let value = snapshot.value as? [String : Any] else { print("value error"); return nil }
+        guard let email = value["email"] as? String else { print("email error"); return nil }
+        guard let firstName = value["firstName"] as? String else { print("firstName error"); return nil }
+        guard let lastName = value["lastName"] as? String else { print("lastName error"); return nil }
+        guard let uuid = value["uuid"] as? String else { print("uuid error"); return nil }
+
+        //print("value,email,firstName,lastName,uuid",value,email,firstName,lastName,uuid)
+        
+        self.userRef = snapshot.ref
+        self.email = email
+        self.firstName = firstName
+        self.lastName = lastName
+        self.uuid = uuid
+
+    }
+    
+    func save() {
+        userRef?.setValue(toAnyObject())
+    }
+
+    func toAnyObject()->[String : Any] {
+        return [
+            "uuid" : uuid,
+            "email" : email,
+            "firstName" : firstName,
+            "lastName" : lastName,
+        ]
     }
     
 }
@@ -59,52 +97,52 @@ struct Articles {
     
     let title: String
     let context: String
-    let author: String
     let creatdate: String
-    let like = 0
+    var like = 0
     let ref: DatabaseReference?
-    
-    init(title: String, context: String, author: String, creatdate: String) {
+    let uuid: String
+    var fullName: String?
+
+    init(title: String, context: String, creatdate: String, uuid: String) {
+        
         self.title = title
         self.context = context
-        self.author = author
         self.creatdate = creatdate
-        ref = Database.database().reference().child("Articles").childByAutoId()
+        self.uuid = uuid
+        
+        ref = Database.database().reference().child("posts").childByAutoId()
     }
     
     init?(snapshot: DataSnapshot) {
 
-        guard let value = snapshot.value as? [String : Any],
-           let title = value["title"] as? String,
-           let context = value["context"] as? String,
-           let author = value["author"] as? String,
-           let creatdate = value["creatdate"] as? String,
-           let like = value["like"] as? String else {
-
-            return nil
-        }
-
+        guard let value = snapshot.value as? [String : Any] else { return nil }
+        guard let title = value["title"] as? String else { return nil }
+        guard let context = value["context"] as? String else  { return nil}
+        guard let creatdate = value["creatdate"] as? String else { return nil }
+        guard let like = value["numberOflike"] as? Int else { return nil }
+        guard let uuid = value["uuid"] as? String else { return nil }
+        
         self.ref = snapshot.ref
         self.title = title
         self.context = context
-        self.author = author
         self.creatdate = creatdate
-
+        self.uuid = uuid
+        self.like = like
+        
     }
-    
     
     func save() {
         ref?.setValue(toAnyObject())
     }
-    
+    //回傳到firebase上
     func toAnyObject() -> [String : Any]
     {
         return [
             "title" : title,
             "context" : context,
-            "author" : author,
-            "creatdata" : creatdate,
-            "like" : like
+            "creatdate" : creatdate,
+            "numberOflike" : like,
+            "uuid" : uuid
         ]
     }
     
